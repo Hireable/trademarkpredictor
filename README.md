@@ -1,104 +1,119 @@
-# Trademark Case AI Agent
+# Trademark Predictor
 
 ## Overview
 
-This project leverages AI and cloud technologies to process semi-structured trademark dispute case outcomes, extracting predictive data for further analysis. The extracted data is stored as vector embeddings in Pinecone, facilitating predictive machine learning (ML) and generative AI applications, such as predicting the outcomes of pending trademark cases.
+The **Trademark Predictor** project is an advanced AI-powered system designed to process and analyse trademark dispute cases. By leveraging cutting-edge AI technologies, this system extracts structured data from legal documents, generates vector embeddings using Legal-BERT, and performs predictive analysis with tools like Pinecone. The project also integrates **smolagents**, a novel library by Hugging Face, to create modular, intelligent agents for streamlined workflows.
 
-## Features
+## Key Features
 
-- **PDF Processing**: Extracts text from PDF documents using Google Document AI.
-- **Data Structuring**: Maps extracted text to a predefined schema for standardisation.
-- **Vector Embedding**: Converts case data into vector embeddings using Legal-BERT for semantic analysis.
-- **Storage in Pinecone**: Stores embeddings and associated metadata in Pinecone for efficient similarity searches and predictions.
-- **Predictive Modelling**: Provides groundwork for predictive ML models by organising case data.
+1. **PDF Processing**:
+   - Utilises Google Document AI for robust text extraction from legal PDFs.
+2. **Schema Mapping**:
+   - Transforms extracted text into a standardised schema based on a predefined JSON structure.
+3. **Embedding Generation**:
+   - Leverages **Legal-BERT**, a domain-specific model, for semantic embeddings.
+4. **Vector Database Integration**:
+   - Stores embeddings and metadata in Pinecone for efficient similarity searches.
+5. **Predictive Modelling**:
+   - Builds a foundation for ML-based predictions of case outcomes.
+6. **Agent-Driven Workflows**:
+   - Uses **smolagents** to automate and validate key steps in the processing pipeline.
+
+## Vision
+
+The ultimate goal of Trademark Predictor is to enable legal professionals, researchers, and organisations to:
+- Anticipate trademark dispute outcomes.
+- Analyse historical cases for trends and insights.
+- Accelerate decision-making through data-driven recommendations.
 
 ## Architecture
 
-1. **Document Upload**: Users upload a PDF of a trademark dispute case. The file is stored in a Google Cloud Storage bucket.
-2. **Text Extraction**: The uploaded PDF is processed by Google Document AI, extracting and chunking text for embedding.
-3. **Vectorisation**: Chunked text is transformed into vector embeddings using Legal-BERT.
-4. **Metadata Mapping**: Extracted data is structured according to a JSON schema.
-5. **Storage**: Vectors and metadata are stored in a Pinecone index.
-6. **Future Applications**: The dataset can be used for ML-based predictions and generative AI applications.
+### Workflow
 
-## Requirements
+1. **Document Input**:
+   - Users upload trademark dispute case PDFs.
+2. **Text Extraction**:
+   - Documents are processed using Google Document AI.
+3. **Data Structuring**:
+   - Extracted text is mapped to the JSON schema (`tmpredictorschema.json`).
+4. **Embedding Generation**:
+   - Text is converted to vector embeddings using Legal-BERT.
+5. **Agent Automation**:
+   - **smolagents** manage tasks such as validation, processing, and database interactions.
+6. **Storage and Querying**:
+   - Vectors and metadata are stored in Pinecone, enabling advanced similarity searches.
 
-### Python Dependencies
+### Tools and Libraries
 
-Install the required Python packages using:
+- **smolagents**: Orchestrates modular AI agent tasks.
+- **Legal-BERT**: A pre-trained transformer model fine-tuned for legal documents.
+- **Pinecone**: A vector database for efficient data retrieval.
+- **Google Document AI**: Extracts structured data from unstructured PDFs.
 
-```bash
-pip install -r requirements.txt
-```
+## Installation
 
-Key dependencies include:
+### Prerequisites
 
-- `google-cloud-storage`
-- `google-cloud-documentai`
-- `pinecone-client`
-- `transformers`
-- `torch`
-- `pytest` (for testing)
+- Python 3.8 or higher
+- Google Cloud API key
+- Pinecone API key
 
-### Cloud Services
+### Installation Steps
 
-1. **Google Cloud**:
-   - **Document AI**: For PDF text extraction.
-   - **Storage**: For storing raw and processed documents.
-2. **Pinecone**:
-   - Vector database for storing embeddings.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-repo/trademark-predictor.git
+   cd trademark-predictor
+   ```
 
-### Model
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-- **Legal-BERT**: Pre-trained model for embedding generation.
+3. Configure environment variables:
+   - Set up API keys for Pinecone and Google Cloud.
 
-## Configuration
+### Configuration
 
-The application requires a configuration file (`config.py`) with the following settings:
-
-- `PROJECT_ID`: Google Cloud project ID.
-- `INDEX_NAME`: Name of the Pinecone index.
-- `DIMENSION`: Vector embedding dimensions (e.g., 768).
-- `SCHEMA_PATH`: Path to the JSON schema.
-- Error message templates for debugging.
+Update the `config.py` file with your project-specific details:
+- Google Cloud project ID
+- Pinecone index name and API key
+- JSON schema path
 
 ## Usage
 
-### Processing a Case
+### Processing Documents
 
-1. Upload a trademark dispute PDF document.
-2. Extract text using `TrademarkDocumentProcessor`.
-3. Generate embeddings using `TrademarkCaseAgent`.
-4. Store the vectors and metadata in Pinecone.
-5. Query Pinecone for predictions or similarity analysis.
+1. Upload a trademark case PDF.
+2. Trigger processing via the agent (`TrademarkCaseAgent`):
+   ```python
+   from test_agent import TrademarkCaseAgent
+
+   agent = TrademarkCaseAgent()
+   agent.process_case(case_data)
+   ```
+3. Query processed data in Pinecone for similarity analysis or predictions.
 
 ### Running Tests
 
-Unit tests are available in the `tests` directory. Use `pytest` to run the test suite:
-
+Run unit tests to verify the pipeline:
 ```bash
 pytest
 ```
 
-## Schema
+## Future Enhancements
 
-The case data adheres to a predefined JSON schema (`tmpredictorschema.json`). Key fields include:
+- **Generative AI**: Use embeddings to generate case summaries and insights.
+- **Cross-Jurisdictional Analysis**: Support for additional jurisdictions.
+- **Real-Time Predictions**: Provide dynamic recommendations based on incoming data.
 
-- `case_metadata`: Metadata such as case reference, decision date, and jurisdiction.
-- `party_info`: Applicant and opponent details.
-- `commercial_context`: Information on goods/services and market characteristics.
-- `similarity_assessment`: Similarity metrics between trademarks.
-- `outcome`: Decision and confidence score.
+## Contributing
 
-## Future Work
-
-- **Predictive Modelling**: Train ML models on the Pinecone dataset to predict case outcomes.
-- **Generative AI**: Leverage embeddings for generating case summaries and insights.
-- **Scalability**: Enhance processing speed and add support for more jurisdictions.
-
-## Contributions
-
-Contributions are welcome! Please open an issue or submit a pull request to discuss proposed changes.
+Contributions are welcome! To contribute:
+1. Fork the repository.
+2. Create a feature branch.
+3. Submit a pull request for review.
 
 ## License
 
@@ -106,5 +121,4 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 
 ## Contact
 
-For queries or feedback, please reach out to joe\@gethireable.com.
-
+For queries or suggestions, please email **joe@gethireable.com**.
