@@ -1,0 +1,8 @@
+langchain
+pinecone-client
+transformers
+sentence-transformers
+unstructured[local-inference]  # Or just 'unstructured' if local inference isn't needed
+python-dotenv
+pdfplumber
+openpyxl

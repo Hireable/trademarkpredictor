@@ -1,0 +1,14 @@
+# Ignore Python virtual environments
+.venv/
+
+# Ignore large libraries or binaries
+*.dll
+*.lib
+
+#
+.ipynb_checkpoints
+__pycache__
+*.pt
+*.pth
+*.pkl
+run/
