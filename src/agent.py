@@ -16,7 +16,7 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
-BATCH_SIZE = 100  # Adjust batch size as needed
+BATCH_SIZE = 5  # Adjust batch size as needed
 
 class TrademarkCaseAgent:
     def __init__(self):

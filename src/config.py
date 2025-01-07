@@ -18,8 +18,8 @@ EMBEDDING_MODEL_NAME = "hkunlp/instructor-large"
 EMBEDDING_DIMENSION = 768
 
 # Langchain text splitter configuration
-CHUNK_SIZE = 8
-CHUNK_OVERLAP = 8
+CHUNK_SIZE = 1500
+CHUNK_OVERLAP = 150
 
 # Other settings
 SCHEMA_PATH = os.path.join("data", "schema.json")
