@@ -1,0 +1,6 @@
+- Home:
+    - index
+- Modules:
+    - src/trademarkpredictor/config
+    - src/trademarkpredictor/document_processor
+    - src/trademarkpredictor/trademark_analyzer
