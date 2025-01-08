@@ -1,6 +1,6 @@
 # Ignore Python virtual environments
 .venv/
-
+.env
 # Ignore large libraries or binaries
 *.dll
 *.lib
