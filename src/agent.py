@@ -355,44 +355,48 @@ class TrademarkCaseAgent:
         
         return prompt
 
-    async def generate_json_output(
-        self,
-        case_text: str
-    ) -> Optional[Dict[str, Any]]:
+    async def generate_json_output(self, text_content: str) -> Optional[Dict]:
         """
-        Generate JSON output from Gemini with validation.
-
+        Generate structured JSON output from text content using Vertex AI.
+    
         Args:
-            case_text: Input text for the case
-
+        text_content: The text content to process
+        
         Returns:
-            Dictionary containing parsed JSON output, or None if an error occurs
-
-        Raises:
-            ProcessingError: If there is an error generating the response
-            ValidationError: If the generated JSON doesn't match the schema
+        Dictionary containing the structured data, or None if generation fails
         """
-
-        prompt = self.create_prompt_with_examples(case_text)
-
         try:
-            responses = self.resources.gemini_model.generate_content(
-                [prompt],
-                generation_config=self.generation_config,
-                safety_settings=self.safety_settings,
-                stream=True,
-            )
-            full_response = ""
-            for response in responses:
-                full_response += response.text
-
-            # Extract and validate JSON
-            json_output = self._extract_and_validate_json(full_response)
-            return json_output
-
+        # Initialize the model with proper configuration
+            model = GenerativeModel(
+            "gemini-pro",
+            generation_config={"temperature": 0.2}  # Low temperature for consistent output
+        )
+        
+        # Create the prompt with the schema and example
+        prompt = self._create_json_prompt(text_content)
+        
+        # Generate the response
+        response = await model.generate_content(prompt)
+        
+        if not response or not hasattr(response, 'candidates') or not response.candidates:
+            logging.error("Invalid response format from Vertex AI")
+            return None
+            
+        # Extract the JSON string from the response
+        json_str = response.candidates[0].content
+        
+        # Parse and validate the JSON
+        try:
+            json_data = json.loads(json_str)
+            # Add validation against schema if needed
+            return json_data
+        except json.JSONDecodeError as e:
+            logging.error(f"Failed to parse JSON response: {e}")
+            return None
+            
         except Exception as e:
-            logger.error(f"Error during JSON generation or validation: {e}")
-            return None  # Handle the error appropriately
+            logging.error(f"Error during JSON generation or validation: {str(e)}")
+        return None
 
     def _extract_and_validate_json(self, result: str) -> Dict[str, Any]:
         """Extract and validate JSON from LLM response"""

@@ -1,0 +1,25 @@
+Metadata-Version: 2.2
+Name: trademarkpredictor
+Version: 0.1
+Requires-Python: >=3.8
+Requires-Dist: pytest>=7.0.0
+Requires-Dist: pytest-asyncio
+Requires-Dist: google-cloud-aiplatform
+Requires-Dist: vertexai
+Requires-Dist: pinecone-client
+Requires-Dist: sentence-transformers
+Requires-Dist: PyPDF2
+Requires-Dist: pydantic
+Requires-Dist: aiohttp
+Provides-Extra: dev
+Requires-Dist: black; extra == "dev"
+Requires-Dist: isort; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+Requires-Dist: mypy; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+Provides-Extra: test
+Requires-Dist: pytest-mock; extra == "test"
+Requires-Dist: asynctest; extra == "test"
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
