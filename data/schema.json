@@ -2,312 +2,100 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
-    "case_metadata": {
-      "type": "object",
-      "properties": {
-        "case_ref": {
-          "type": "string",
-          "description": "Official case reference number"
-        },
-        "officer": {
-          "type": "string",
-          "description": "Name of hearing officer/appointed person",
-          "nullable": true
-        },
-        "dec_date": {
-          "type": "string",
-          "format": "date",
-          "description": "Date of the decision"
-        },
-        "jurisdiction": {
-          "type": "string",
-          "enum": ["UK", "EU", "Other"],
-          "description": "Jurisdiction of the decision"
-        }
+    "case_ref": {
+      "type": "string",
+      "description": "Official case reference number"
+    },
+    "officer": {
+      "type": "string",
+      "description": "Name of the adjudicating officer"
+    },
+    "dec_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the decision was issued"
+    },
+    "jurisdiction": {
+      "type": "string",
+      "description": "Jurisdiction where the case was decided"
+    },
+    "app_mark": {
+      "type": "string",
+      "description": "Trademark applied for by the applicant"
+    },
+    "opp_mark": {
+      "type": "string",
+      "description": "Trademark of the opposing party"
+    },
+    "app_name": {
+      "type": ["string", "null"],
+      "description": "Name of the applicant"
+    },
+    "app_spec": {
+      "type": ["string", "null"],
+      "description": "Goods or services covered by the applicant's trademark"
+    },
+    "opp_spec": {
+      "type": ["string", "null"],
+      "description": "Goods or services registered under the opponent's trademark"
+    },
+    "app_class": {
+      "type": "array",
+      "items": {
+        "type": "integer"
       },
-      "required": ["case_ref", "dec_date"]
+      "description": "Classification codes for the applicant's goods/services"
     },
-    "party_info": {
-      "type": "object",
-      "properties": {
-        "app_mark": {
-          "type": "string",
-          "description": "The trademark being applied for"
-        },
-        "opp_mark": {
-          "type": "string",
-          "description": "The opposing trademark"
-        },
-        "app_name": {
-          "type": "string",
-          "description": "Name of the trademark applicant"
-        },
-        "opp_name": {
-          "type": "string",
-          "description": "Name of the opposing party"
-        },
-        "app_wipo_basic_numbers": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Array of WIPO BASIC numbers for the applicant"
-        },
-        "opp_wipo_basic_numbers": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Array of WIPO BASIC numbers for the opposing party"
-        },
-        "market_presence": {
-          "type": "object",
-          "properties": {
-            "opp_market_tenure": {
-              "type": "integer",
-              "description": "Years opponent's mark has been in market",
-              "nullable": true
-            },
-            "geographic_overlap": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 5,
-              "description": "Degree of geographic market overlap",
-              "nullable": true
-            }
-          }
-        }
+    "opp_class": {
+      "type": "array",
+      "items": {
+        "type": "integer"
       },
-      "required": ["app_mark", "opp_mark", "app_wipo_basic_numbers", "opp_wipo_basic_numbers"]
+      "description": "Classification codes for the opponent's goods/services"
     },
-    "commercial_context": {
-      "type": "object",
-      "properties": {
-        "app_spec": {
-          "type": "string",
-          "description": "Full specification of goods/services in application"
-        },
-        "opp_spec": {
-          "type": "string",
-          "description": "Full specification of goods/services in earlier mark"
-        },
-        "app_class": {
-          "type": "array",
-          "items": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 45
-          },
-          "description": "Nice Classification numbers for application"
-        },
-        "opp_class": {
-          "type": "array",
-          "items": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 45
-          },
-          "description": "Nice Classification numbers for earlier mark"
-        },
-        "market_characteristics": {
-          "type": "object",
-          "properties": {
-            "price_point": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 5,
-              "description": "Price category (1=Budget, 5=Luxury)",
-              "nullable": true
-            },
-            "purchase_frequency": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 5,
-              "description": "Typical purchase frequency (1=Rare, 5=Very Frequent)",
-              "nullable": true
-            },
-            "market_sophistication": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 5,
-              "description": "Target market sophistication level",
-              "nullable": true
-            }
-          }
-        }
-      },
-      "required": ["app_spec", "opp_spec", "app_class", "opp_class"]
+    "comp_mkt": {
+      "type": "boolean",
+      "description": "Whether the applicant and opponent compete in the same market"
     },
-    "similarity_assessment": {
-      "type": "object",
-      "properties": {
-        "mark_similarity": {
-          "type": "object",
-          "properties": {
-            "vis_sim": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 5,
-              "description": "Visual similarity",
-              "nullable": true
-            },
-            "aur_sim": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 5,
-              "description": "Aural similarity",
-              "nullable": true
-            },
-            "con_sim": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 5,
-              "description": "Conceptual similarity",
-              "nullable": true
-            }
-          }
-        },
-        "gds_sim": {
-          "type": "object",
-          "properties": {
-            "nature": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 5,
-              "description": "Similarity in nature",
-              "nullable": true
-            },
-            "purpose": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 5,
-              "description": "Similarity in purpose",
-              "nullable": true
-            },
-            "channels": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 5,
-              "description": "Similarity in trade channels",
-              "nullable": true
-            },
-            "use": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 5,
-              "description": "Similarity in method of use",
-              "nullable": true
-            }
-          }
-        }
-      },
-      "required": ["mark_similarity", "gds_sim"]
+    "market_overlap_duration": {
+      "type": ["number", "null"],
+      "description": "Duration of overlapping market activity (in years)"
     },
-    "market_dynamics": {
-      "type": "object",
-      "properties": {
-        "comp_gds": {
-          "type": "boolean",
-          "description": "Whether goods/services are complementary",
-          "nullable": true
-        },
-        "comp_mkt": {
-          "type": "boolean",
-          "description": "Whether goods/services are in direct competition",
-          "nullable": true
-        },
-        "actual_confusion": {
-          "type": "boolean",
-          "description": "Evidence of actual confusion presented",
-          "nullable": true
-        },
-        "market_overlap_duration": {
-          "type": "integer",
-          "description": "Years both marks have coexisted in market",
-          "nullable": true
-        }
-      }
+    "attention": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Average consumer attention level (scale of 1–5)"
     },
-    "consumer_factors": {
-      "type": "object",
-      "properties": {
-        "attention": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 5,
-          "description": "Level of consumer attention",
-          "nullable": true
-        },
-        "purchase_environment": {
-          "type": "string",
-          "enum": ["physical", "online", "both", "other"],
-          "description": "Primary purchase environment",
-          "nullable": true
-        },
-        "impulse_purchase_likelihood": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 5,
-          "description": "Likelihood of impulse purchase",
-          "nullable": true
-        }
-      }
+    "distinct": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Distinctiveness of the opponent's mark (scale of 1–5)"
     },
-    "distinctiveness": {
-      "type": "object",
-      "properties": {
-        "inherent": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 5,
-          "description": "Inherent distinctiveness",
-          "nullable": true
-        },
-        "acquired": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 5,
-          "description": "Acquired distinctiveness",
-          "nullable": true
-        },
-        "distinct": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 5,
-          "description": "Overall distinctive character",
-          "nullable": true
-        }
-      }
+    "confusion": {
+      "type": "boolean",
+      "description": "Whether a likelihood of confusion was found (Yes/No)"
     },
-    "outcome": {
-      "type": "object",
-      "properties": {
-        "confusion": {
-          "type": "boolean",
-          "description": "Finding on likelihood of confusion"
-        },
-        "conf_type": {
-          "type": "string",
-          "enum": ["direct", "indirect", "both"],
-          "nullable": true,
-          "description": "Type of confusion found if applicable"
-        },
-        "confidence_score": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 5,
-          "description": "Apparent confidence in decision",
-          "nullable": true
-        }
-      },
-      "required": ["confusion"]
+    "conf_type": {
+      "type": "string",
+      "enum": ["direct", "indirect", "none"],
+      "description": "Type of confusion if found (direct/indirect/none)"
     }
   },
   "required": [
-    "case_metadata",
-    "party_info",
-    "commercial_context",
-    "similarity_assessment",
-    "outcome"
+    "case_ref",
+    "officer",
+    "dec_date",
+    "jurisdiction",
+    "app_mark",
+    "opp_mark",
+    "app_class",
+    "opp_class",
+    "comp_mkt",
+    "attention",
+    "distinct",
+    "confusion",
+    "conf_type"
   ]
 }

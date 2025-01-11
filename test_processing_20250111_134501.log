@@ -1,0 +1,21 @@
+2025-01-11 13:45:01,611 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['C:\\Users\\jpbpr\\OneDrive\\Documents\\Hireable\\trademarkpredictor\\.venv\\Lib\\site-packages\\pinecone_plugins'])
+2025-01-11 13:45:01,612 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-11 13:45:01,634 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-11 13:45:02,449 - __main__ - INFO - Initializing embedding model (multilingual-e5-large)
+2025-01-11 13:45:02,455 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-01-11 13:45:02,455 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/multilingual-e5-large
+2025-01-11 13:51:30,557 - __main__ - INFO - 
+================================================================================
+Starting document processing: data/raw_pdfs/o-0060-24 pet clothing v clothing.pdf
+================================================================================
+2025-01-11 13:51:30,557 - __main__ - INFO - Loading document...
+2025-01-11 13:51:30,557 - __main__ - ERROR - Document loading failed: name 'window' is not defined
+2025-01-11 13:51:30,557 - __main__ - ERROR - Processing failed: name 'window' is not defined
+Traceback (most recent call last):
+  File "C:\Users\jpbpr\OneDrive\Documents\Hireable\trademarkpredictor\test_pipeline.py", line 56, in process_document
+    document_text = await self._load_document(pdf_path)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jpbpr\OneDrive\Documents\Hireable\trademarkpredictor\test_pipeline.py", line 102, in _load_document
+    content = await window.fs.readFile(pdf_path, { encoding: 'utf8' })
+                    ^^^^^^
+NameError: name 'window' is not defined

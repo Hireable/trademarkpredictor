@@ -1,0 +1,88 @@
+2025-01-11 14:08:18,958 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['C:\\Users\\jpbpr\\OneDrive\\Documents\\Hireable\\trademarkpredictor\\.venv\\Lib\\site-packages\\pinecone_plugins'])
+2025-01-11 14:08:18,959 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-11 14:08:18,979 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-11 14:08:19,750 - __main__ - INFO - Initializing embedding model (multilingual-e5-large)
+2025-01-11 14:08:19,755 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-01-11 14:08:19,756 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/multilingual-e5-large
+2025-01-11 14:08:23,357 - __main__ - INFO - 
+================================================================================
+Starting document processing: data/raw_pdfs/o-0060-24 pet clothing v clothing.pdf
+================================================================================
+2025-01-11 14:08:23,357 - __main__ - INFO - Loading document...
+2025-01-11 14:08:24,598 - __main__ - INFO - Document loaded successfully: 42911 characters
+2025-01-11 14:08:24,599 - __main__ - INFO - Creating document chunks...
+2025-01-11 14:08:24,599 - __main__ - INFO - 
+        Chunking Statistics:
+        - Number of chunks: 35
+        - Average chunk size: 1410 characters
+        - Max chunk size: 2385 characters
+        - Min chunk size: 80 characters
+        
+2025-01-11 14:08:24,600 - __main__ - INFO - Created 35 chunks
+2025-01-11 14:08:24,600 - __main__ - INFO - Generating embeddings...
+2025-01-11 14:09:00,841 - __main__ - INFO - 
+            Embedding Statistics:
+            - Shape: (35, 1024)
+            - Mean: -0.0008
+            - Std: 0.0312
+            
+2025-01-11 14:09:00,841 - __main__ - INFO - Generated embeddings - Shape: (35, 1024)
+2025-01-11 14:09:00,841 - __main__ - INFO - Extracting metadata...
+2025-01-11 14:09:00,841 - __main__ - INFO - Extracted base metadata
+2025-01-11 14:09:00,841 - __main__ - INFO - Metadata validation successful
+2025-01-11 14:09:00,841 - __main__ - INFO - Storing vectors in Pinecone...
+2025-01-11 14:09:02,059 - __main__ - ERROR - Vector storage failed: (400)
+Reason: Bad Request
+HTTP response headers: HTTPHeaderDict({'content-type': 'application/json', 'Content-Length': '159', 'x-pinecone-request-latency-ms': '544', 'x-pinecone-request-id': '6657251985264217264', 'date': 'Sat, 11 Jan 2025 14:09:04 GMT', 'x-envoy-upstream-service-time': '129', 'server': 'envoy', 'Via': '1.1 google', 'Alt-Svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000'})
+HTTP response body: {"code":3,"message":"Metadata value must be a string, number, boolean or list of strings, got '{\"case_ref\":\"Sam...' for field 'case_metadata'","details":[]}
+
+2025-01-11 14:09:02,060 - __main__ - ERROR - Processing failed: (400)
+Reason: Bad Request
+HTTP response headers: HTTPHeaderDict({'content-type': 'application/json', 'Content-Length': '159', 'x-pinecone-request-latency-ms': '544', 'x-pinecone-request-id': '6657251985264217264', 'date': 'Sat, 11 Jan 2025 14:09:04 GMT', 'x-envoy-upstream-service-time': '129', 'server': 'envoy', 'Via': '1.1 google', 'Alt-Svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000'})
+HTTP response body: {"code":3,"message":"Metadata value must be a string, number, boolean or list of strings, got '{\"case_ref\":\"Sam...' for field 'case_metadata'","details":[]}
+Traceback (most recent call last):
+  File "C:\Users\jpbpr\OneDrive\Documents\Hireable\trademarkpredictor\test_pipeline.py", line 77, in process_document
+    storage_results = await self._store_vectors(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jpbpr\OneDrive\Documents\Hireable\trademarkpredictor\test_pipeline.py", line 293, in _store_vectors
+    await self.case_index.upsert(
+          ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jpbpr\OneDrive\Documents\Hireable\trademarkpredictor\.venv\Lib\site-packages\pinecone\utils\error_handling.py", line 11, in inner_func
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jpbpr\OneDrive\Documents\Hireable\trademarkpredictor\.venv\Lib\site-packages\pinecone\data\index.py", line 175, in upsert
+    return self._upsert_batch(vectors, namespace, _check_type, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jpbpr\OneDrive\Documents\Hireable\trademarkpredictor\.venv\Lib\site-packages\pinecone\data\index.py", line 204, in _upsert_batch
+    return self._vector_api.upsert(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jpbpr\OneDrive\Documents\Hireable\trademarkpredictor\.venv\Lib\site-packages\pinecone\core\openapi\shared\api_client.py", line 761, in __call__
+    return self.callable(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jpbpr\OneDrive\Documents\Hireable\trademarkpredictor\.venv\Lib\site-packages\pinecone\core\openapi\data\api\data_plane_api.py", line 811, in __upsert
+    return self.call_with_http_info(**kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jpbpr\OneDrive\Documents\Hireable\trademarkpredictor\.venv\Lib\site-packages\pinecone\core\openapi\shared\api_client.py", line 819, in call_with_http_info
+    return self.api_client.call_api(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jpbpr\OneDrive\Documents\Hireable\trademarkpredictor\.venv\Lib\site-packages\pinecone\core\openapi\shared\api_client.py", line 380, in call_api
+    return self.__call_api(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\jpbpr\OneDrive\Documents\Hireable\trademarkpredictor\.venv\Lib\site-packages\pinecone\core\openapi\shared\api_client.py", line 187, in __call_api
+    raise e
+  File "C:\Users\jpbpr\OneDrive\Documents\Hireable\trademarkpredictor\.venv\Lib\site-packages\pinecone\core\openapi\shared\api_client.py", line 175, in __call_api
+    response_data = self.request(
+                    ^^^^^^^^^^^^^
+  File "C:\Users\jpbpr\OneDrive\Documents\Hireable\trademarkpredictor\.venv\Lib\site-packages\pinecone\core\openapi\shared\api_client.py", line 460, in request
+    return self.rest_client.POST(
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jpbpr\OneDrive\Documents\Hireable\trademarkpredictor\.venv\Lib\site-packages\pinecone\core\openapi\shared\rest.py", line 345, in POST
+    return self.request(
+           ^^^^^^^^^^^^^
+  File "C:\Users\jpbpr\OneDrive\Documents\Hireable\trademarkpredictor\.venv\Lib\site-packages\pinecone\core\openapi\shared\rest.py", line 279, in request
+    raise PineconeApiException(http_resp=r)
+pinecone.core.openapi.shared.exceptions.PineconeApiException: (400)
+Reason: Bad Request
+HTTP response headers: HTTPHeaderDict({'content-type': 'application/json', 'Content-Length': '159', 'x-pinecone-request-latency-ms': '544', 'x-pinecone-request-id': '6657251985264217264', 'date': 'Sat, 11 Jan 2025 14:09:04 GMT', 'x-envoy-upstream-service-time': '129', 'server': 'envoy', 'Via': '1.1 google', 'Alt-Svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000'})
+HTTP response body: {"code":3,"message":"Metadata value must be a string, number, boolean or list of strings, got '{\"case_ref\":\"Sam...' for field 'case_metadata'","details":[]}
+

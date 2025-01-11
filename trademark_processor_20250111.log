@@ -1,0 +1,34 @@
+2025-01-11 12:20:58 - [25736] - root - INFO - PINECONE_API_KEY: [VALID]
+2025-01-11 12:20:58 - [25736] - root - INFO - PINECONE_ENVIRONMENT: gcp-starter
+2025-01-11 12:20:58 - [25736] - root - INFO - VERTEX_PROJECT_ID: trademark-case-agent
+2025-01-11 12:20:58 - [25736] - root - INFO - GOOGLE_APPLICATION_CREDENTIALS: [VALID]
+2025-01-11 12:20:58 - [25736] - src.config - ERROR - Failed to initialize configuration: 'AppConfig' object has no attribute 'data_dir'
+2025-01-11 12:20:58 - [25736] - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['C:\\Users\\jpbpr\\OneDrive\\Documents\\Hireable\\trademarkpredictor\\venv\\Lib\\site-packages\\pinecone_plugins'])
+2025-01-11 12:20:58 - [25736] - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-11 12:20:58 - [25736] - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-11 12:20:58 - [25736] - __main__ - INFO - Successfully connected to Pinecone
+2025-01-11 12:20:58 - [25736] - __main__ - INFO - Successfully initialized Vertex AI
+2025-01-11 12:20:58 - [25736] - __main__ - ERROR - Configuration verification failed: 'AppConfig' object has no attribute 'data_dir'
+2025-01-11 12:20:58 - [25736] - __main__ - ERROR - Processing pipeline failed: [1002] Environment validation failed
+Traceback (most recent call last):
+  File "C:\Users\jpbpr\OneDrive\Documents\Hireable\trademarkpredictor\src\__main__.py", line 314, in main
+    raise ConfigurationError("Environment validation failed")
+src.exceptions.ConfigurationError: [1002] Environment validation failed
+2025-01-11 12:20:58 - [25736] - __main__ - ERROR - Fatal error: [1002] Environment validation failed
+2025-01-11 12:23:39 - [6896] - root - INFO - PINECONE_API_KEY: [VALID]
+2025-01-11 12:23:39 - [6896] - root - INFO - PINECONE_ENVIRONMENT: gcp-starter
+2025-01-11 12:23:39 - [6896] - root - INFO - VERTEX_PROJECT_ID: trademark-case-agent
+2025-01-11 12:23:39 - [6896] - root - INFO - GOOGLE_APPLICATION_CREDENTIALS: [VALID]
+2025-01-11 12:23:39 - [6896] - src.config - ERROR - Failed to initialize configuration: 'AppConfig' object has no attribute 'data_dir'
+2025-01-11 12:23:39 - [6896] - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['C:\\Users\\jpbpr\\OneDrive\\Documents\\Hireable\\trademarkpredictor\\venv\\Lib\\site-packages\\pinecone_plugins'])
+2025-01-11 12:23:39 - [6896] - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-11 12:23:39 - [6896] - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-11 12:23:40 - [6896] - __main__ - INFO - Successfully connected to Pinecone
+2025-01-11 12:23:40 - [6896] - __main__ - INFO - Successfully initialized Vertex AI
+2025-01-11 12:23:40 - [6896] - __main__ - ERROR - Configuration verification failed: 'AppConfig' object has no attribute 'data_dir'
+2025-01-11 12:23:40 - [6896] - __main__ - ERROR - Processing pipeline failed: [1002] Environment validation failed
+Traceback (most recent call last):
+  File "C:\Users\jpbpr\OneDrive\Documents\Hireable\trademarkpredictor\src\__main__.py", line 314, in main
+    raise ConfigurationError("Environment validation failed")
+src.exceptions.ConfigurationError: [1002] Environment validation failed
+2025-01-11 12:23:40 - [6896] - __main__ - ERROR - Fatal error: [1002] Environment validation failed

@@ -1,0 +1,22 @@
+2025-01-11 14:31:54,087 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['C:\\Users\\jpbpr\\OneDrive\\Documents\\Hireable\\trademarkpredictor\\.venv\\Lib\\site-packages\\pinecone_plugins'])
+2025-01-11 14:31:54,089 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-11 14:31:54,117 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone
+2025-01-11 14:31:55,044 - __main__ - INFO - Initializing embedding model (multilingual-e5-large)
+2025-01-11 14:31:55,049 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-01-11 14:31:55,049 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/multilingual-e5-large
+2025-01-11 14:31:59,214 - __main__ - INFO - 
+================================================================================
+Starting document processing: data/raw_pdfs/o-0060-24 pet clothing v clothing.pdf
+================================================================================
+2025-01-11 14:31:59,214 - __main__ - INFO - Loading document...
+2025-01-11 14:32:00,352 - __main__ - INFO - Document loaded successfully: 42911 characters
+2025-01-11 14:32:00,353 - __main__ - INFO - Creating document chunks...
+2025-01-11 14:32:00,353 - __main__ - INFO - 
+        Chunking Statistics:
+        - Number of chunks: 35
+        - Average chunk size: 1410 characters
+        - Max chunk size: 2385 characters
+        - Min chunk size: 80 characters
+        
+2025-01-11 14:32:00,353 - __main__ - INFO - Created 35 chunks
+2025-01-11 14:32:00,354 - __main__ - INFO - Generating embeddings...

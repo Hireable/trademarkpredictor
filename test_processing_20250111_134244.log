@@ -1,0 +1,3 @@
+2025-01-11 13:42:44,982 - pinecone_plugin_interface.logging - INFO - Discovering subpackages in _NamespacePath(['C:\\Users\\jpbpr\\OneDrive\\Documents\\Hireable\\trademarkpredictor\\.venv\\Lib\\site-packages\\pinecone_plugins'])
+2025-01-11 13:42:44,983 - pinecone_plugin_interface.logging - INFO - Looking for plugins in pinecone_plugins.inference
+2025-01-11 13:42:45,004 - pinecone_plugin_interface.logging - INFO - Installing plugin inference into Pinecone

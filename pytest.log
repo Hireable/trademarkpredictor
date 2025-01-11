@@ -1,0 +1,28 @@
+DEBUG    layoutparser.file_utils:file_utils.py:40 PyTorch version 2.5.1 available.
+DEBUG    layoutparser.file_utils:file_utils.py:64 Effdet version 0.4.1 available.
+DEBUG    layoutparser.file_utils:file_utils.py:85 Google Cloud Vision Utils version 3.9.0 available.
+DEBUG    matplotlib:__init__.py:342 matplotlib data path: C:\Users\jpbpr\OneDrive\Documents\Hireable\trademarkpredictor\venv\Lib\site-packages\matplotlib\mpl-data
+DEBUG    matplotlib:__init__.py:342 CONFIGDIR=C:\Users\jpbpr\.matplotlib
+DEBUG    matplotlib:__init__.py:1557 interactive is False
+DEBUG    matplotlib:__init__.py:1558 platform is win32
+DEBUG    matplotlib:__init__.py:342 CACHEDIR=C:\Users\jpbpr\.matplotlib
+DEBUG    matplotlib.font_manager:font_manager.py:1635 Using fontManager instance from C:\Users\jpbpr\.matplotlib\fontlist-v390.json
+DEBUG    urllib3.connectionpool:connectionpool.py:1049 Starting new HTTPS connection (1): packages.unstructured.io:443
+DEBUG    urllib3.connectionpool:connectionpool.py:544 https://packages.unstructured.io:443 "GET /python-telemetry?version=0.16.12&platform=Windows&python3.11&arch=AMD64&gpu=False&dev=false HTTP/1.1" 302 None
+DEBUG    urllib3.connectionpool:connectionpool.py:1049 Starting new HTTPS connection (1): unstructured.io:443
+DEBUG    urllib3.connectionpool:connectionpool.py:544 https://unstructured.io:443 "GET /?version=0.16.12&platform=Windows&python3.11&arch=AMD64&gpu=False&dev=false HTTP/1.1" 200 231955
+DEBUG    google.cloud.storage._opentelemetry_tracing:_opentelemetry_tracing.py:42 This service is instrumented using OpenTelemetry. OpenTelemetry or one of its components could not be imported; please add compatible versions of opentelemetry-api and opentelemetry-instrumentation packages in order to get Storage Tracing data.
+DEBUG    asyncio:proactor_events.py:633 Using proactor: IocpProactor
+DEBUG    asyncio:proactor_events.py:633 Using proactor: IocpProactor
+DEBUG    asyncio:proactor_events.py:633 Using proactor: IocpProactor
+DEBUG    asyncio:proactor_events.py:633 Using proactor: IocpProactor
+DEBUG    asyncio:proactor_events.py:633 Using proactor: IocpProactor
+DEBUG    asyncio:proactor_events.py:633 Using proactor: IocpProactor
+DEBUG    asyncio:proactor_events.py:633 Using proactor: IocpProactor
+DEBUG    asyncio:proactor_events.py:633 Using proactor: IocpProactor
+INFO     pinecone_plugin_interface.logging:discover_namespace_packages.py:12 Discovering subpackages in _NamespacePath(['C:\\Users\\jpbpr\\OneDrive\\Documents\\Hireable\\trademarkpredictor\\venv\\Lib\\site-packages\\pinecone_plugins'])
+INFO     pinecone_plugin_interface.logging:discover_plugins.py:9 Looking for plugins in pinecone_plugins.inference
+INFO     pinecone_plugin_interface.logging:installation.py:10 Installing plugin inference into Pinecone
+DEBUG    pinecone.core.openapi.shared.rest:rest.py:264 response body: b'{"name":"tm-doc-chunks","metric":"cosine","dimension":1024,"status":{"ready":true,"state":"Ready"},"host":"tm-doc-chunks-sl7l358.svc.gcp-europe-west4-de1d.pinecone.io","spec":{"serverless":{"region":"europe-west4","cloud":"gcp"}},"deletion_protection":"disabled"}'
+ERROR    trademarkpredictor.tests.test_trademark_agent:test_trademark_agent.py:219 Query validation failed: 'TestPineconeIntegration' object has no attribute 'test_namespace'
+DEBUG    asyncio:proactor_events.py:633 Using proactor: IocpProactor

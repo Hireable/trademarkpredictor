@@ -1,230 +1,220 @@
 import pytest
 import asyncio
-import json
-from pathlib import Path
-from unittest.mock import patch, AsyncMock
+import os
+from typing import Dict, Any, List
 import logging
+from datetime import datetime
+from pathlib import Path
+import json
 
-from src.agent import TrademarkCaseAgent, ProcessingConfig
-from src.config import VertexAIConfig
-from src.exceptions import ProcessingError
+from pinecone import Pinecone
+import numpy as np
+from dotenv import load_dotenv
 
-# Configure logging for tests
-logging.basicConfig(level=logging.DEBUG)
+from ..src.agent import TrademarkCaseAgent
+from ..src.config import ProcessingConfig
+from ..src.utils import MetadataProcessor, VectorStoreManager
+from ..src.exceptions import StorageError
+
+load_dotenv()
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-class TestPDFProcessing:
-    """
-    Test suite specifically for PDF processing functionality.
-    This class focuses on testing the system with real PDF files from the test_pdfs directory.
-    """
-
-    @pytest.fixture
-    def pdf_directory(self):
-        """
-        Fixture that provides the path to test PDFs directory.
-        This helps ensure our tests can find the PDF files regardless of where they're run from.
-        """
-        # Assuming tests/test_pdfs is relative to the project root
-        return Path(__file__).parent / "test_pdfs"
-
-    @pytest.fixture
-    def test_config(self):
-        """
-        Provides a test configuration that matches our production setup but uses test-specific values.
-        This ensures our tests run in isolation from any production data.
-        """
-        return {
-            "PINECONE_INDEX_NAME": "test-index",
-            "EMBEDDING_MODEL_NAME": "all-mpnet-base-v2",  # Using the actual model for integration tests
-            "WIPO_INDEX_NAME": "test-wipo",
-            "SCHEMA_PATH": str(Path(__file__).parent / "data" / "test_schema.json"),
-            "EXAMPLES_PATH": str(Path(__file__).parent / "data" / "test_examples.json"),
-            "VERTEX_PROJECT_ID": "test-project",
-            "VERTEX_LOCATION": "test-location"
-        }
-
-    @pytest.mark.asyncio
-    async def test_single_pdf_processing(self, pdf_directory, test_config):
-        """
-        Tests processing of a single PDF file through the entire pipeline.
-        This test verifies that we can:
-        1. Read and chunk the PDF correctly
-        2. Generate embeddings for each chunk
-        3. Store the embeddings with correct metadata
-        """
-        # Get the first PDF from our test directory
-        test_pdf = next(pdf_directory.glob("*.pdf"))
+class PineconeTestValidator:
+    """Helper class to validate Pinecone operations and data structure"""
+    
+    def __init__(self, api_key: str, environment: str):
+        self.pc = Pinecone(api_key=os.getenv('PINECONE_API_KEY'))
+        self.environment = environment
         
-        agent = TrademarkCaseAgent(
-            config=test_config,
-            processing_config=ProcessingConfig(
-                chunk_size=1000,  # Smaller chunks for testing
-                chunk_overlap=100
-            ),
-            vertex_ai_config=VertexAIConfig(
-                project_id="test-project",
-                location="test-location"
-            )
-        )
+    async def validate_index_structure(self, index_name: str) -> Dict[str, Any]:
+        """Validates the index configuration and returns its statistics"""
+        try:
+            index = self.pc.Index(index_name)
+            stats = await index.describe_index_stats()
+            logger.info(f"Index statistics: {json.dumps(stats, indent=2)}")
+            return stats
+        except Exception as e:
+            logger.error(f"Failed to validate index structure: {str(e)}")
+            raise
 
-        # Track the number of chunks processed
-        chunk_count = 0
-        stored_embeddings = []
-
-        # Mock the storage function to capture what would be stored
-        async def mock_store_embeddings(chunk, embedding, namespace, source):
-            nonlocal chunk_count
-            chunk_count += 1
-            stored_embeddings.append({
-                "chunk": chunk,
-                "embedding": embedding,
-                "namespace": namespace,
-                "source": source
-            })
-
-        with patch.object(agent, '_store_chunk_embeddings', side_effect=mock_store_embeddings):
-            await agent.process_pdf_streaming(str(test_pdf))
-
-            # Verify processing results
-            assert chunk_count > 0, "PDF should be split into at least one chunk"
-            assert all(len(e["embedding"]) == 768 for e in stored_embeddings), \
-                "All embeddings should have correct dimension"
-            assert all(e["namespace"] == test_pdf.stem for e in stored_embeddings), \
-                "All chunks should use PDF filename as namespace"
-
-    @pytest.mark.asyncio
-    async def test_multi_pdf_concurrent_processing(self, pdf_directory, test_config):
-        """
-        Tests concurrent processing of multiple PDFs.
-        This test verifies that we can:
-        1. Process multiple PDFs simultaneously
-        2. Maintain separate namespaces for each PDF
-        3. Handle concurrent embedding generation and storage
-        """
-        pdf_files = list(pdf_directory.glob("*.pdf"))
-        assert len(pdf_files) >= 2, "Need at least 2 PDFs for concurrent testing"
-
-        agent = TrademarkCaseAgent(
-            config=test_config,
-            processing_config=ProcessingConfig(
-                batch_size=2,  # Process 2 PDFs concurrently
-                chunk_size=1000,
-                chunk_overlap=100
-            ),
-            vertex_ai_config=VertexAIConfig(
-                project_id="test-project",
-                location="test-location"
-            )
-        )
-
-        # Track processing results per PDF
-        results = {}
-
-        async def mock_store_embeddings(chunk, embedding, namespace, source):
-            if namespace not in results:
-                results[namespace] = []
-            results[namespace].append({
-                "chunk": chunk,
-                "embedding": embedding,
-                "source": source
-            })
-
-        with patch.object(agent, '_store_chunk_embeddings', side_effect=mock_store_embeddings):
-            # Process PDFs concurrently
-            tasks = [
-                agent.process_pdf_streaming(str(pdf))
-                for pdf in pdf_files[:2]  # Test with first two PDFs
-            ]
-            await asyncio.gather(*tasks)
-
-            # Verify results
-            assert len(results) == 2, "Should have processed 2 PDFs"
-            for pdf in pdf_files[:2]:
-                namespace = pdf.stem
-                assert namespace in results, f"Missing results for {namespace}"
-                assert len(results[namespace]) > 0, f"No chunks processed for {namespace}"
-
-    @pytest.mark.asyncio
-    async def test_pdf_to_json_pipeline(self, pdf_directory, test_config):
-        """
-        Tests the complete pipeline from PDF processing to JSON generation.
-        This test verifies that we can:
-        1. Extract text from PDF
-        2. Generate valid JSON output matching our schema
-        3. Properly structure trademark case information
-        """
-        test_pdf = next(pdf_directory.glob("*.pdf"))
+@pytest.mark.asyncio
+class TestPineconeIntegration:
+    """Integration tests for Pinecone operations"""
+    
+    @pytest.fixture(autouse=True)
+    async def setup(self):
+        """Set up test environment and resources"""
+        # Load environment variables
+        load_dotenv()
         
-        # Mock response for JSON generation
-        mock_json = {
-            "case_number": "TEST/123",
-            "opposition_number": "OPP/456",
-            "applicant": "Test Company A",
-            "opponent": "Test Company B",
-            "applied_mark": "TEST MARK"
-        }
-
-        agent = TrademarkCaseAgent(
-            config=test_config,
-            processing_config=ProcessingConfig(),
-            vertex_ai_config=VertexAIConfig(
-                project_id="test-project",
-                location="test-location"
-            )
+        # Load test configuration
+        self.api_key = os.getenv('PINECONE_API_KEY')
+        self.environment = os.getenv('PINECONE_ENVIRONMENT')
+        
+        if not self.api_key or not self.environment:
+            pytest.skip("Pinecone credentials not configured")
+        
+        # Load test schema and examples
+        test_data_dir = Path(__file__).parent / "data"
+        self.schema_path = test_data_dir / "test_schema.json"
+        self.examples_path = test_data_dir / "test_examples.json"
+        
+        # Ensure test data directory exists
+        test_data_dir.mkdir(exist_ok=True)
+        
+        # Create test schema if it doesn't exist
+        if not self.schema_path.exists():
+            test_schema = {
+                "type": "object",
+                "properties": {
+                    "case_metadata": {"type": "object"},
+                    "party_info": {"type": "object"},
+                    "commercial_context": {"type": "object"}
+                },
+                "required": ["case_metadata", "party_info", "commercial_context"]
+            }
+            with open(self.schema_path, 'w') as f:
+                json.dump(test_schema, f, indent=2)
+        
+        # Load schema
+        with open(self.schema_path) as f:
+            self.test_schema = json.load(f)
+        
+        # Initialize validator
+        self.validator = PineconeTestValidator(
+            self.api_key,
+            self.environment
         )
-
-        # Set up mocks
-        mock_response = AsyncMock()
-        mock_response.text = json.dumps(mock_json)
-
-        with patch('vertexai.generative_models.GenerativeModel.generate_content') as mock_generate:
-            mock_generate.return_value = [mock_response]
-
-            # Process PDF and generate JSON
-            await agent.process_pdf_streaming(str(test_pdf))
+        
+        # Create test namespace
+        self.test_namespace = f"test_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        
+        yield
+        
+        # Cleanup test namespace
+        try:
+            pc = Pinecone(api_key=os.getenv('PINECONE_API_KEY'))
+            index = pc.Index("tm-doc-chunks")
+            await index.delete(
+                deleteAll=True,
+                namespace=self.test_namespace
+            )
+        except Exception as e:
+            logger.error(f"Cleanup failed: {str(e)}")
+    
+    async def test_index_structure(self):
+        """Verify index configuration and structure"""
+        stats = await self.validator.validate_index_structure("tm-doc-chunks")
+        
+        # Verify index properties
+        assert stats['dimension'] == 1536, "Incorrect embedding dimension"
+        assert stats['total_vector_count'] > 0, "Index is empty"
+        
+        logger.info(f"Index statistics: {json.dumps(stats, indent=2)}")
+    
+    async def test_document_processing_and_storage(self):
+        """Test complete document processing pipeline"""
+        # Initialize agent with test configuration
+        config = {
+            "SCHEMA": self.test_schema,
+            "CONFIDENCE_THRESHOLDS": {"mark_similarity": 0.7, "gds_sim": 0.75},
+            "ENABLE_VALIDATION": True
+        }
+        
+        agent = TrademarkCaseAgent(config=config)
+        
+        try:
+            # Find test PDF
+            test_pdfs_dir = Path(__file__).parent / "test_pdfs"
+            test_pdf = next(test_pdfs_dir.glob("*.pdf"), None)
             
-            # Extract text from chunks and generate JSON
-            # Note: In a real scenario, you'd need to aggregate chunks appropriately
-            text_content = "Sample extracted text"  # You'd get this from chunks
-            json_output = await agent.generate_json_output(text_content)
-
-            # Verify JSON output
-            assert json_output is not None, "Should generate valid JSON"
-            assert json_output == mock_json, "JSON output should match expected structure"
-
-    @pytest.mark.asyncio
-    async def test_error_handling(self, pdf_directory, test_config):
-        """
-        Tests error handling during PDF processing.
-        This test verifies that we can:
-        1. Handle corrupted PDFs
-        2. Handle failed embedding generation
-        3. Handle failed storage operations
-        4. Properly clean up resources on failure
-        """
-        test_pdf = next(pdf_directory.glob("*.pdf"))
-        
-        agent = TrademarkCaseAgent(
-            config=test_config,
-            processing_config=ProcessingConfig(),
-            vertex_ai_config=VertexAIConfig(
-                project_id="test-project",
-                location="test-location"
+            if not test_pdf:
+                pytest.skip("Test document not found")
+            
+            # Process document
+            await agent.process_pdf_streaming(
+                str(test_pdf),
+                namespace=self.test_namespace
+            )
+            
+            # Allow time for processing
+            await asyncio.sleep(5)
+            
+            # Verify results
+            metadata_stats = await self.validator.verify_vector_metadata(
+                "tm-doc-chunks",
+                self.test_namespace,
+                ["case_metadata", "party_info", "commercial_context"]
+            )
+            
+            assert metadata_stats['compliant_vectors'] > 0, "No compliant vectors found"
+            
+        finally:
+            await agent.cleanup()
+    
+    async def test_batch_upsert_validation(self):
+        """Test batch upsert operations"""
+        manager = VectorStoreManager(
+            api_key=os.getenv('PINECONE_API_KEY'),
+            environment=self.environment,
+            metadata_processor=MetadataProcessor(
+                schema=self.test_schema,
+                confidence_thresholds={"mark_similarity": 0.7, "gds_sim": 0.75}
             )
         )
-
-        # Test handling of embedding generation failure
-        with patch.object(agent, '_generate_embeddings', side_effect=Exception("Embedding failed")):
-            with pytest.raises(ProcessingError) as exc_info:
-                await agent.process_pdf_streaming(str(test_pdf))
-            assert "Embedding failed" in str(exc_info.value)
-
-        # Test handling of storage failure
-        with patch.object(agent, '_store_chunk_embeddings', side_effect=Exception("Storage failed")):
-            with pytest.raises(ProcessingError) as exc_info:
-                await agent.process_pdf_streaming(str(test_pdf))
-            assert "Storage failed" in str(exc_info.value)
-
-if __name__ == "__main__":
-    pytest.main(["-v"])
+        
+        # Create test vectors
+        test_vectors = [
+            {
+                'id': f'test_vector_{i}',
+                'values': np.random.rand(1536).tolist(),
+                'metadata': {
+                    'case_metadata': {'reference': f'TM{i:03d}'},
+                    'party_info': {'app_mark': f'TestMark{i}'},
+                    'commercial_context': {'goods_services': ['Class 9']}
+                }
+            }
+            for i in range(10)
+        ]
+        
+        try:
+            # Perform batch upsert
+            result = await manager.upsert_with_metadata(
+                test_vectors,
+                self.test_namespace
+            )
+            
+            assert result['status'] == 'success'
+            
+        finally:
+            await manager.cleanup()
+    
+    async def test_query_validation(self):
+        """Test query operations"""
+        pc = Pinecone(api_key=os.getenv('PINECONE_API_KEY'))
+        index = pc.Index("tm-doc-chunks")
+        
+        try:
+            response = await index.query(
+                namespace=self.test_namespace,
+                vector=np.random.rand(1536).tolist(),
+                top_k=5,
+                include_metadata=True
+            )
+            
+            assert hasattr(response, 'matches'), "Invalid response structure"
+            
+            for match in response.matches:
+                assert hasattr(match, 'id'), "Match missing ID"
+                assert hasattr(match, 'metadata'), "Match missing metadata"
+                
+                metadata = match.metadata
+                assert 'case_metadata' in metadata
+                assert 'party_info' in metadata
+                
+        except Exception as e:
+            logger.error(f"Query validation failed: {str(e)}")
+            raise
