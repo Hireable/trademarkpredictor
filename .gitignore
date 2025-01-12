@@ -1,0 +1,20 @@
+# Ignore Python virtual environments
+.venv/
+.env
+# Ignore large libraries or binaries
+*.dll
+*.lib
+
+#
+.ipynb_checkpoints
+__pycache__
+*.pt
+*.pth
+*.pkl
+run/
+test_pipeline.py
+pinecone_init.py
+.coverage
+pytest.*
+test_*
+virtual_machine_config.json

@@ -1,0 +1,2 @@
+[console_scripts]
+trademark-predict = trademarkpredictor.__main__:main

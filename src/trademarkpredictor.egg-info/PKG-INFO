@@ -1,0 +1,236 @@
+Metadata-Version: 2.2
+Name: trademarkpredictor
+Version: 0.2.0
+Summary: AI-powered trademark opposition decision analyzer
+Home-page: https://github.com/Hireable/trademarkpredictor
+Author: Joe Brown
+Author-email: joe@gethireable.com
+Keywords: trademark,legal,ai,nlp,machine-learning
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Legal Industry
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Text Processing :: General
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: google-cloud-aiplatform>=1.25.0
+Requires-Dist: vertexai>=0.0.1
+Requires-Dist: pinecone-client>=2.2.1
+Requires-Dist: sentence-transformers>=2.2.2
+Requires-Dist: unstructured[local-inference]>=0.6.8
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: aiohttp>=3.8.0
+Requires-Dist: tenacity>=8.0.0
+Requires-Dist: jsonschema>=4.0.0
+Requires-Dist: pdfminer.six>=20221105
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.20.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: black>=22.0.0; extra == "dev"
+Requires-Dist: isort>=5.0.0; extra == "dev"
+Requires-Dist: flake8>=4.0.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Requires-Dist: pre-commit>=3.0.0; extra == "dev"
+Provides-Extra: docs
+Requires-Dist: sphinx>=4.0.0; extra == "docs"
+Requires-Dist: sphinx-rtd-theme>=1.0.0; extra == "docs"
+Requires-Dist: sphinx-autodoc-typehints>=1.12.0; extra == "docs"
+Provides-Extra: all
+Requires-Dist: pytest>=7.0.0; extra == "all"
+Requires-Dist: pytest-asyncio>=0.20.0; extra == "all"
+Requires-Dist: pytest-cov>=4.0.0; extra == "all"
+Requires-Dist: black>=22.0.0; extra == "all"
+Requires-Dist: isort>=5.0.0; extra == "all"
+Requires-Dist: flake8>=4.0.0; extra == "all"
+Requires-Dist: mypy>=1.0.0; extra == "all"
+Requires-Dist: pre-commit>=3.0.0; extra == "all"
+Requires-Dist: sphinx>=4.0.0; extra == "all"
+Requires-Dist: sphinx-rtd-theme>=1.0.0; extra == "all"
+Requires-Dist: sphinx-autodoc-typehints>=1.12.0; extra == "all"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# TrademarkPredictor
+
+**TrademarkPredictor** is a sophisticated AI-powered tool designed to analyze and process trademark opposition decisions from PDF documents. It leverages advanced natural language processing (NLP) techniques, including **Retrieval-Augmented Generation (RAG)** and **Google Vertex AI's Gemini model**, to extract structured data from legal documents and predict outcomes. This tool is particularly useful for legal professionals, trademark attorneys, and businesses looking to streamline the analysis of trademark cases.
+
+The project integrates multiple technologies, including:
+- **Google Vertex AI** for generative text processing.
+- **Pinecone** for vector storage and retrieval.
+- **Sentence Transformers** for generating embeddings.
+- **Unstructured** for PDF document parsing.
+
+---
+
+## Table of Contents
+
+1. [Features](#features)
+2. [Installation](#installation)
+3. [Usage](#usage)
+4. [Workflow](#workflow)
+5. [Configuration](#configuration)
+6. [Contributing](#contributing)
+7. [License](#license)
+8. [Acknowledgments](#acknowledgments)
+
+---
+
+## Features
+
+- **PDF Document Processing**: Efficiently processes large PDF documents using streaming to handle chunking and embedding generation.
+- **Structured Data Extraction**: Extracts structured JSON data from trademark opposition decisions using a predefined schema.
+- **Few-Shot Learning**: Incorporates few-shot examples to guide the AI in generating accurate and consistent outputs.
+- **Vector Storage**: Uses Pinecone for storing and retrieving document embeddings, enabling efficient similarity searches.
+- **Validation**: Ensures generated JSON outputs conform to a predefined schema for consistency and accuracy.
+- **Concurrency**: Utilizes `asyncio` for concurrent processing, improving performance for large-scale operations.
+
+---
+
+## Installation
+
+To set up the project locally, follow these steps:
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/Hireable/trademarkpredictor.git
+   cd trademarkpredictor
+   ```
+
+2. **Set Up a Virtual Environment** (Optional but Recommended):
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+   ```
+
+3. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Set Up Environment Variables**:
+   Create a `.env` file in the root directory and add the following variables:
+   ```plaintext
+   PINECONE_API_KEY=your_pinecone_api_key
+   PINECONE_INDEX_NAME=your_pinecone_index_name
+   VERTEX_PROJECT_ID=your_vertex_ai_project_id
+   VERTEX_LOCATION=your_vertex_ai_location
+   EMBEDDING_MODEL_NAME=your_embedding_model_name
+   SCHEMA_PATH=path/to/schema.json
+   EXAMPLES_PATH=path/to/examples.json
+   ```
+
+5. **Download Pre-Trained Models**:
+   Ensure the required models (e.g., Sentence Transformers) are downloaded and available.
+
+---
+
+## Usage
+
+### Processing a PDF Document
+
+To process a PDF document and extract structured data, use the following code:
+
+```python
+from agent import TrademarkCaseAgent
+
+# Initialize the agent
+agent = TrademarkCaseAgent()
+
+# Process a PDF document
+pdf_path = "path/to/your/document.pdf"
+namespace = "custom_namespace"  # Optional namespace for vector storage
+
+await agent.process_pdf_streaming(pdf_path, namespace)
+```
+
+### Generating JSON Output
+
+To generate structured JSON output from a case text:
+
+```python
+case_text = "Your trademark case text here..."
+json_output = await agent.generate_json_output(case_text)
+
+print(json_output)
+```
+
+### Cleaning Up Resources
+
+After processing, ensure resources are cleaned up:
+
+```python
+await agent.cleanup()
+```
+
+---
+
+## Workflow
+
+1. **Document Chunking**: The PDF document is split into smaller chunks for efficient processing.
+2. **Embedding Generation**: Each chunk is converted into embeddings using a pre-trained Sentence Transformer model.
+3. **Vector Storage**: Embeddings are stored in Pinecone for future retrieval.
+4. **Text Generation**: The Gemini model generates structured JSON output based on the input text and few-shot examples.
+5. **Validation**: The generated JSON is validated against a predefined schema to ensure accuracy and consistency.
+
+---
+
+## Configuration
+
+The project is highly configurable. Key configuration options include:
+
+- **ProcessingConfig**: Controls chunk size, overlap, batch size, and retry settings.
+- **VertexAIConfig**: Manages Google Vertex AI settings, including project ID and location.
+- **Schema and Examples**: Define the structure of the output JSON and provide few-shot examples for the AI.
+
+Configuration is loaded from environment variables and JSON files. Ensure all required paths and keys are correctly set in the `.env` file.
+
+---
+
+## Contributing
+
+We welcome contributions to improve TrademarkPredictor! Here’s how you can help:
+
+1. **Report Issues**: If you find a bug or have a feature request, please open an issue on GitHub.
+2. **Submit Pull Requests**: Fork the repository, make your changes, and submit a pull request.
+3. **Improve Documentation**: Help us improve the README, code comments, or add tutorials.
+
+Please read our [Contribution Guidelines](CONTRIBUTING.md) for more details.
+
+---
+
+## License
+
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## Acknowledgments
+
+- **Google Vertex AI**: For providing the Gemini model and generative AI capabilities.
+- **Pinecone**: For enabling efficient vector storage and retrieval.
+- **Sentence Transformers**: For generating high-quality embeddings.
+- **Unstructured**: For simplifying PDF document parsing.
+
+---
+
+## Contact
+
+For questions or feedback, please reach out to:
+- **Joe Brown**: [joe@gethireable.com](mailto:joe@gethireable.com)
+- **GitHub Issues**: [Open an Issue](https://github.com/Hireable/trademarkpredictor/issues)

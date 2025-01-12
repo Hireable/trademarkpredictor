@@ -1,0 +1,7 @@
+google-cloud-aiplatform>=1.25.0  # For Vertex AI
+sentence-transformers>=2.2.2     # For embeddings
+pinecone-client>=2.2.1          # For Pinecone
+unstructured[local-inference]>=0.6.8 # For PDF parsing (local inference if needed)
+python-dotenv>=1.0.0           # For .env file handling
+openpyxl>=3.1.2               # If you need Excel handling
+pdfminer.six>=20221105       # pdfplumber's dependency, ensure a compatible version
